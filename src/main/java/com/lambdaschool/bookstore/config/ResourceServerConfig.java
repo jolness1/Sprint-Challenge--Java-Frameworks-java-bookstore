@@ -38,12 +38,6 @@ public class ResourceServerConfig
             Exception
     {
 
-//        GET /books/books - any user with the role ADMIN, USER, or DATA can access
-//        GET /books/book/{id} - any user with role ADMIN, USER, or DATA can access
-//        POST /books/book - any user with role ADMIN can access
-//        PUT /books/book/{id} - any user with role ADMIN can access
-//        DELETE /books/book/{id} - any user with role ADMIN can access
-
         // our antMatchers control which roles of users have access to which endpoints
         // we must order our antmatchers from most restrictive to least restrictive.
         // So restrict at method level before restricting at endpoint level.
@@ -61,7 +55,13 @@ public class ResourceServerConfig
                              "/createnewuser")
                 .permitAll()
                 .antMatchers(HttpMethod.GET, "/books/books", "/books/book/{id}")
-                .hasAnyRole("ADMIN", "DATA")
+                .hasAnyRole("ADMIN", "DATA", "USER")
+                .antMatchers(HttpMethod.POST, "books/book")
+                .hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/books/book/{id}")
+                .hasAnyRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "books/book/{id}")
+                .hasAnyRole("ADMIN")
                 .antMatchers("/users/**",
                              "/useremails/**",
                              "/oauth/revoke-token",
