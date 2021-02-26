@@ -41,10 +41,10 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WithMockUser(username = "admin",
-        roles = {"ADMIN"})
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BookstoreApplicationTest.class)
+        roles = {"USER", "ADMIN"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = BookstoreApplicationTest.class, properties = {
+        "command.line.runner.enabled=false"})
 @AutoConfigureMockMvc
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class BookControllerUnitTestNoDB
 {
     @Autowired
@@ -211,6 +211,22 @@ public class BookControllerUnitTestNoDB
     public void addNewBook() throws
             Exception
     {
+            String apiUrl = "/books/book";
+            Section s1 = new Section("Fiction");
+            Book b3 = new Book("Mah Test Book", "97803074744560", 2021,s1);
+            b3.setBookid(36);
+
+
+            ObjectMapper mapper = new ObjectMapper();
+            String bookString = mapper.writeValueAsString(b3);
+
+            Mockito.when(bookService.save(any(Book.class))).thenReturn(b3);
+
+            RequestBuilder rb = MockMvcRequestBuilders.post(apiUrl).accept(MediaType.APPLICATION_JSON)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(bookString);
+            mockMvc.perform(rb).andExpect(status().isCreated()).andDo(MockMvcResultHandlers.print());
+
     }
 
     @Test

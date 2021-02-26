@@ -46,28 +46,27 @@ public class ResourceServerConfig
         // hasAnyRole = must be authenticated and be assigned this role!
         http.authorizeRequests()
                 .antMatchers("/",
-                             "/h2-console/**",
-                             "/swagger-resources/**",
-                             "/swagger-resource/**",
-                             "/swagger-ui.html",
-                             "/v2/api-docs",
-                             "/webjars/**",
-                             "/createnewuser")
+                        "/h2-console/**",
+                        "/swagger-resources/**",
+                        "/swagger-resource/**",
+                        "/swagger-ui.html",
+                        "/v2/api-docs",
+                        "/webjars/**",
+                        "/createnewuser","/books/**")
                 .permitAll()
-                .antMatchers(HttpMethod.GET, "/books/books", "/books/book/{id}")
-                .hasAnyRole("ADMIN", "DATA", "USER")
-                .antMatchers(HttpMethod.POST, "books/book")
+                .antMatchers(HttpMethod.POST,
+                        "/books/**")
                 .hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.PUT, "/books/book/{id}")
+                .antMatchers(HttpMethod.DELETE,
+                        "/books/**")
                 .hasAnyRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "books/book/{id}")
+                .antMatchers(HttpMethod.PUT,
+                        "/books/**")
                 .hasAnyRole("ADMIN")
                 .antMatchers("/users/**",
-                             "/useremails/**",
-                             "/oauth/revoke-token",
-                             "/logout",
-                             "books/books"
-                        )
+                        "/useremails/**",
+                        "/oauth/revoke-token",
+                        "/logout")
                 .authenticated()
                 .antMatchers("/roles/**")
                 .hasAnyRole("ADMIN", "DATA")

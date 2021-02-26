@@ -6,11 +6,14 @@ import com.lambdaschool.bookstore.models.Author;
 import com.lambdaschool.bookstore.models.Book;
 import com.lambdaschool.bookstore.models.Section;
 import com.lambdaschool.bookstore.models.Wrote;
+import com.lambdaschool.bookstore.repository.AuthorRepository;
 import com.lambdaschool.bookstore.repository.BookRepository;
+import com.lambdaschool.bookstore.repository.SectionRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BookstoreApplicationTest.class,
@@ -33,7 +41,11 @@ public class BookServiceImplUnitTestNoDB
 
     @Autowired
     private BookService bookService;
+    @MockBean
+    private AuthorRepository authorrepos;
 
+    @MockBean
+    private SectionRepository sectionrepos;
     @MockBean
     private BookRepository bookrepos;
 
@@ -161,6 +173,21 @@ public class BookServiceImplUnitTestNoDB
     @Test
     public void save()
     {
+        Author a1 = new Author("John", "Mitchell");
+        a1.setAuthorid(1);
+        String nameBook = "Java for Lambda Students";
+        Section s1 = new Section("Technology");
+        s1.setSectionid(1);
+        Book b3 = new Book("Java for Lambda Students", "9780307412345", 2019,s1);
+        b3.getWrotes().add(new Wrote(a1,new Book()));
+
+        Mockito.when(bookrepos.save(any(Book.class))).thenReturn(b3);
+        Mockito.when(sectionrepos.findById(1L)).thenReturn(Optional.of(s1));
+        Mockito.when(authorrepos.findById(1L)).thenReturn(Optional.of(a1));
+        b3 = bookService.save(b3);
+        System.out.println(b3);
+        assertNotNull(b3);
+        assertEquals(nameBook, b3.getTitle());
 
     }
 
