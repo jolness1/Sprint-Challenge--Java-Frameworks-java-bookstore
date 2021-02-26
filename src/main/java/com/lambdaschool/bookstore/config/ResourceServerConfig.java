@@ -1,6 +1,7 @@
 package com.lambdaschool.bookstore.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -36,6 +37,13 @@ public class ResourceServerConfig
             throws
             Exception
     {
+
+//        GET /books/books - any user with the role ADMIN, USER, or DATA can access
+//        GET /books/book/{id} - any user with role ADMIN, USER, or DATA can access
+//        POST /books/book - any user with role ADMIN can access
+//        PUT /books/book/{id} - any user with role ADMIN can access
+//        DELETE /books/book/{id} - any user with role ADMIN can access
+
         // our antMatchers control which roles of users have access to which endpoints
         // we must order our antmatchers from most restrictive to least restrictive.
         // So restrict at method level before restricting at endpoint level.
@@ -52,10 +60,14 @@ public class ResourceServerConfig
                              "/webjars/**",
                              "/createnewuser")
                 .permitAll()
+                .antMatchers(HttpMethod.GET, "/books/books", "/books/book/{id}")
+                .hasAnyRole("ADMIN", "DATA")
                 .antMatchers("/users/**",
                              "/useremails/**",
                              "/oauth/revoke-token",
-                             "/logout")
+                             "/logout",
+                             "books/books"
+                        )
                 .authenticated()
                 .antMatchers("/roles/**")
                 .hasAnyRole("ADMIN", "DATA")
