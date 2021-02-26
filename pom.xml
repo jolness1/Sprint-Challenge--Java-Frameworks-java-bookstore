@@ -105,6 +105,7 @@
     </dependencies>
 
     <build>
+        <finalName>jolness1-web38deploysprint</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -128,7 +129,6 @@
                     </processTypes>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 
